@@ -218,7 +218,9 @@ export class MemoryCryptoStore implements CryptoStore {
     public async deleteEndToEndSessionsBatch(sessions: { deviceKey: string; sessionId: string }[]): Promise<void> {
         for (const { deviceKey, sessionId } of sessions) {
             const deviceSessions = this.sessions[deviceKey] || {};
-            delete deviceSessions[sessionId];
+            if (sessionId !== "__proto__" && sessionId !== "constructor" && sessionId !== "prototype") {
+                delete deviceSessions[sessionId];
+            }
             if (Object.keys(deviceSessions).length === 0) {
                 // No more sessions for this device.
                 delete this.sessions[deviceKey];
